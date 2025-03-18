@@ -24,7 +24,7 @@ export default class extends Controller {
         } catch (error) {
             console.log('error', error)
         }
-        //todo : voir pour reemplacer le 1 par une variable currentPage
+        //todo : voir pour reemplacer le 1 par une variable currentPage qui permettra changer la page au moment de cliquer sur les bouton de la pagination
         this.getOffres(token, 1).then()
     }
 
