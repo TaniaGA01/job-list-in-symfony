@@ -1,0 +1,58 @@
+services:
+  php:
+    image: php:8.2-fpm
+    container_name: offres_emploi_php
+    volumes:
+      - .:/var/www/html:cached
+    working_dir: /var/www/html
+    networks:
+      - offres_emploi
+
+  nginx:
+    image: nginx:latest
+    container_name: offres_emploi_nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - offres_emploi
+
+  offres_emploi_mysql:
+    image: mysql:8.0
+    container_name: offres_emploi_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: offres_emploi
+      MYSQL_USER: offres_emploi
+      MYSQL_PASSWORD: offres_emploi
+    ports:
+      - "3306:3306"
+    volumes:
+      - offres_emploi_mysql_data:/var/lib/mysql
+    networks:
+      - offres_emploi
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_offres_emploi
+    environment:
+      - PMA_HOST=offres_emploi_mysql
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "8080:80" # Exponiendo el puerto 8080 para acceder a phpMyAdmin
+    depends_on:
+      - offres_emploi_mysql
+    networks:
+      - offres_emploi
+
+networks:
+  offres_emploi:
+    driver: bridge
+
+volumes:
+  offres_emploi_mysql_data:

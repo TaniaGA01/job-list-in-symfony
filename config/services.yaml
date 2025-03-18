@@ -4,6 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    FRANCE_TRAVAIL_API_ACCESS_TOKEN: '%env(FRANCE_TRAVAIL_API_ACCESS_TOKEN)%'
+    FRANCE_TRAVAIL_API_TOKEN: '%env(FRANCE_TRAVAIL_API_TOKEN)%'
+    FRANCE_TRAVAIL_API_CLIENT: '%env(FRANCE_TRAVAIL_API_CLIENT)%'
+
 
 services:
     # default configuration for services in *this* file
