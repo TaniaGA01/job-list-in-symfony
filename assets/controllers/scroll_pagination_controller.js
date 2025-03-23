@@ -14,24 +14,23 @@ export default class extends Controller {
     async getTocken(){
         let token = "";
         try {
-            let getAccessToken = await fetch(`/france_travail/api`, {
-                    method:'POST'
-                });
+            let getAccessToken = await fetch(`/get-token`);
 
             let response = await getAccessToken.json();
-            token = response.access_token;
+            token = response.token;
+            console.log('token', token)
 
         } catch (error) {
             console.log('error', error)
         }
         //todo : voir pour reemplacer le 1 par une variable currentPage qui permettra changer la page au moment de cliquer sur les bouton de la pagination
-        this.getOffres(token, 1).then()
+        this.getOffres(token, 2).then()
     }
 
     /**
      * Fonction permettant obtenir les données de l'api
      * @param {string} token
-     * @param {Number} page
+     * @param {number} page
      */
     async getOffres(token, page){
         const limit = 9;
@@ -51,6 +50,7 @@ export default class extends Controller {
             );
     
             const data = await response.json();
+            console.log('dqta', data.resultats)
             this.displayOffres(data.resultats)
         } catch (error) {
             console.error('Error au moment de récupérer les offres:', error);
@@ -77,8 +77,6 @@ export default class extends Controller {
             offreBlock.classList.remove('hidden');
 
             this.offersTarget.append(offreBlock);
-            this.paginationTarget.classList.remove('hidden');
-
         })
     }
 }

@@ -2,53 +2,66 @@
 
 namespace App\Controller;
 
+use App\Service\FranceTravailApiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-final class FranceTravailApiController extends AbstractController
+class FranceTravailApiController extends AbstractController
 {
     private HttpClientInterface $client;
+    private FranceTravailApiService $franceTravailApiService;
 
-    public function __construct(HttpClientInterface $client)    
+    public function __construct(HttpClientInterface $client, FranceTravailApiService $franceTravailApiService)    
     {
         $this->client = $client;
+        $this->franceTravailApiService = $franceTravailApiService;
     }
 
-    /**
-     * Fonction permettant faire la requête pour obtenir le token d'accès en utilisant les données du client
-     * @see https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail/requeter-api
-     * @return JsonResponse
-     */
-    #[Route('/france_travail/api', name: 'app_france_travail_api', methods: ['POST'])]
-    public function getOffres(): JsonResponse
+    
+    #[Route('/', name: 'home')]
+    public function fetchData(): Response
     {
 
-        $apiToken = $this->getParameter('FRANCE_TRAVAIL_API_TOKEN');
-        $apiTokenClient = $this->getParameter('FRANCE_TRAVAIL_API_CLIENT');
-
-        $body = http_build_query([
-            'grant_type' => 'client_credentials',
-            'client_id' => $apiTokenClient,
-            'client_secret' => $apiToken,
-            'scope' => 'api_offresdemploiv2 o2dsoffre'
-        ]);
+        $token = $this->franceTravailApiService->getToken();
         
-        $response = $this->client->request(
-            'POST',
-            'https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire',
-            [
-                'headers' => [
-                    'Content-Type'=>'application/x-www-form-urlencoded'
-                ],
-                'body' => $body
-            ]   
-        );
+         $limit = 9;
+         $page = 1;
+        try {
+            $start = ($page - 1) * $limit;
+            $end = $start + $limit - 1;
+            $response = $this->client->request(
+                'GET',
+                "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search?range=$start-$end",
+                [
+                    'headers' => [
+                        "Accept" => "application/json",
+                        "Authorization" => "Bearer $token"
+                    ],
+                ]   
+            );
+            $offers = $response->toArray();
+    
+            return $this->render('home/index.html.twig', [
+                'offers' => $offers
+            ]);
 
-        return new JsonResponse($response->toArray());
+        }catch (\Exception $e) {
+            if ($e->getCode() === 401) {
+                $this->franceTravailApiService->refreshToken();
+                return $this->fetchData();
+            }
+
+            return $this->json(['error' => 'Impossible de retrouver les offres'], 500);
+        }
+
+    }
+    #[Route('/get-token', name: 'get_token')]
+    public function getToken(): JsonResponse
+    {
+        return $this->json(['token' => $this->franceTravailApiService->getToken()]);
     }
 }
