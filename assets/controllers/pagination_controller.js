@@ -97,6 +97,9 @@ export default class extends Controller {
         this.getOffres(this.token, currentPage).then()
     }
 
+    /**
+     * Fonction permettant de filtrer ls offres par commune en utilisant l'api des communes du .gouv
+     */
     async filterOffers(){
         if(this.searchInputTarget.value !== ''){
             try{
@@ -118,6 +121,9 @@ export default class extends Controller {
         }
     }
 
+    /**
+     * Fonction permettant synchroniser les deux points api
+     */
     async synchroLocations(){
         try{
             let place = await fetch(`https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search`,
