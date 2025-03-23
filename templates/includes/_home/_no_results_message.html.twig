@@ -1,0 +1,12 @@
+<div data-pagination-target="message" class="hidden">
+    <div class="text-center">
+        <div class="inline-flex items-center mt-6">
+            {{ ux_icon('fluent:list-bar-24-regular', { class: 'text-indigo-500 w-12 h-12' }) }}
+        </div>
+        <h3 class="mt-2 text-sm font-semibold text-gray-900">Pas de résultats</h3>
+        <p class="mt-1 text-sm text-gray-500">Essayez de faire une nouvelle recherche ou de tout réeinitialiser</p>
+        <div class="inline-flex items-center mt-6">
+            {% include('includes/_buttons/_reload_btn.html.twig') %}
+        </div>
+    </div>
+</div>

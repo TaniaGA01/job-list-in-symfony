@@ -1,0 +1,36 @@
+<li class="p-4 bg-white rounded-lg border border-indigo-500 mt-5">
+    {% 
+        include('includes/_titles/_h2.html.twig') with {
+            'id':'offreTitle',
+            'content':''
+        } 
+    %}
+    <div class="flex items-baseline mb-3">
+        <div class="flex items-baseline me-5">
+            {% 
+                include('includes/_titles/_h4_sm.html.twig') with {
+                    'content':'Entreprise : '
+                }  
+            %}
+            <p id="entrepriseName" class="text-indigo-600"></p>
+        </div>
+        <div class="flex items-baseline">
+            {%  
+                include('includes/_titles/_h4_sm.html.twig') with {
+                    'content':'Commune : '
+                }
+            %}
+            <p id="offreLocation" class="text-indigo-600"></p>
+        </div>
+    </div>
+    <div class="shrink-0 sm:flex sm:flex-col">
+        <div class="line-clamp-4">
+            {% 
+                include('includes/_titles/_h4_sm.html.twig') with {
+                    'content':'Description du poste : '
+                }
+            %}
+            <p class="mb-0 mt-2 text-gray-700" id="offreDescription"></p>
+        </div>
+    </div>
+</li>

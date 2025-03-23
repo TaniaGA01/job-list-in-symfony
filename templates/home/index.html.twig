@@ -3,64 +3,68 @@
 {% block title %}Offres d'emploi{% endblock %}
 
 {% block body %}
-{% include('includes/header.html.twig') %}
+{% include('includes/_header.html.twig') %}
+<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 pb-24" data-controller="pagination">
+	<div class="flex justify-center mt-5">
+		{% include('includes/_home/_filter_by_location.html.twig')%}
+	</div>
+	<div>
+		<ul role="list" class="divide-y divide-gray-100" data-pagination-target="offers" data-page="2">
+			{% for offer in offers.resultats %}
+				<li class="p-4 bg-white rounded-lg border border-indigo-500 mt-5">
+					{% include('includes/_titles/_h2.html.twig') with {
+						'id':'offreTitle',
+						'content':offer.intitule
+					} %}
+					<div class="flex items-baseline mb-3">
+						{% if offer.entreprise.nom is defined %}
+							<div class="flex items-baseline me-5">
+								{% 
+									include('includes/_titles/_h4_sm.html.twig') with {
+									'content':'Entreprise : '
+									}  
+								%}
+								<p id="entrepriseName" class="text-indigo-600">{{ offer.entreprise.nom }}</p>
+							</div>
+						{% endif %}
+						<div class="flex items-baseline">
+							{%  
+								include('includes/_titles/_h4_sm.html.twig') with {
+									'content':'Commune : '
+								}
+							%}
+							<p id="offreLocation" class="text-indigo-600">{{ offer.lieuTravail.libelle }}</p>
+						</div>
+					</div>
+					<div class="shrink-0 sm:flex sm:flex-col">
+						<div class="line-clamp-4">
+							{% 
+								include('includes/_titles/_h4_sm.html.twig') with {
+									'content':'Description du poste : '
+								}
+							%}
+							<p class="mb-0 mt-2 text-gray-700" id="offreDescription">{{ offer.description }}</p>
+						</div>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
 
-<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8" data-controller="scroll-pagination">
-	<div data-scroll-pagination-target="offers" class="max-sm:pt-12 grid grid-cols-3 gap-4 max-sm:grid-cols-1 mt-8 mb-8">
-		{% for offer in offers.resultats %}
-			<div class="bg-white p-12 rounded-lg border border-indigo-500">
-				<p class="text-sm text-gray-500">Intitulé du poste</p>
-				<h2 id="offreTitle" class="text-2xl mb-6 text-indigo-600 uppercase">{{offer.intitule}}</h2>
-				<div class="line-clamp-4 mb-6">
-					<small class="text-sm text-gray-500">
-						Description du poste
-					</small>
-					<p id="offreDescription">{{offer.description}}</p>
-				</div>
-				<div class="mb-6">
-					<small class="text-sm text-gray-500">
-						Commune
-					</small>
-					<p id="offreLocation">{{offer.lieuTravail.libelle}}</p>
-				</div>
-				<div class="mb-6">
-					<small class="text-sm text-gray-500">
-						Entreprise
-					</small>
-					{% if offer.entreprise.nom is defined %}
-						<p id="entrepriseName">{{offer.entreprise.nom}}</p>
-					{% endif %}
-				</div>
-			</div>
-		{% endfor %}
-    </div>
-    {# Prototype de l'offre #}
-    <div data-scroll-pagination-target="prototype" class="bg-white p-12 rounded-lg border border-indigo-500 hidden">
-        <p class="text-sm text-gray-500">Intitulé du poste</p>
-        <h2 id="offreTitle" class="text-2xl mb-6 text-indigo-600 uppercase"></h2>
-        <div class="line-clamp-4 mb-6">
-            <small class="text-sm text-gray-500">
-                Description du poste
-            </small>
-            <p id="offreDescription"></p>
-        </div>
-        <div class="mb-6">
-            <small class="text-sm text-gray-500">
-                Commune
-            </small>
-            <p id="offreLocation"></p>
-        </div>
-        <div class="mb-6">
-            <small class="text-sm text-gray-500">
-                Entreprise
-            </small>
-            <p id="entrepriseName">
-            </p>
-        </div>
-    </div>
+		{# Prototype de l'offre #}
+		<ul data-pagination-target="prototype" class="hidden">
+			{% include('includes/_home/_offers_prototype.html.twig') %}
+		</ul>
+	</div>
+	{% include('includes/_home/_no_results_message.html.twig') %}
+	<div class="text-center mt-5">
+		<div class="hidden" data-pagination-target="spinner">
+			{% include('includes/_spinner.html.twig') %}
+		</div>
+		<button type="button" class="rounded-full bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-fit mt-3"  data-pagination-target="paginationBtn" data-action="click->pagination#displayOffers">
+			Afficher plus d'offres
+		</button>
+	</div>
 </div>
-
-
 {% endblock %}
 
 
