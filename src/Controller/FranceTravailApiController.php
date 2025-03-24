@@ -28,7 +28,7 @@ class FranceTravailApiController extends AbstractController
 
         $token = $this->franceTravailApiService->getToken();
         
-         $limit = 9;
+         $limit = 10;
          $page = 1;
         try {
             $start = ($page - 1) * $limit;
